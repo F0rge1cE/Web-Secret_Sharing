@@ -43,11 +43,7 @@ def reconstruct(share_list, k):
 	#	share_list: shares uploaded by users
 	#	k: number of shares needed to reconstruct the polynomial
 	# Return: secret
-	x = []
-	y = []
-	for s in share_list:
-		x.append(s[0])
-		y.append(s[1])
+	x, y = zip(*share_list)
 	res = np.polyfit(x,y,k-1)
-	return np.around(res).astype(int)[-1]
-# print(reconstruct(generate_polynomial('t', 5, 5),5))
+	return np.around(res).astype(int).astype(bytes)[-1]
+print(reconstruct(generate_polynomial('t', 5, 4),4))
