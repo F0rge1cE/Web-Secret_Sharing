@@ -11,8 +11,11 @@ def record_meta_data(path, fileContent):
     #   fileContent: List[byte] - file content
     # Return: Metadata of file in dictionary
     print('Generate file meta data...')
+    
     fullName = os.path.split(path)[-1]
     hash = _HASH_FUNC_(b''.join(fileContent)).hexdigest()
+
+    # Set meta data here.
     meta = metaData(fullName, hash)
     return meta
 
@@ -36,6 +39,7 @@ def read_file_as_bytes(path, chunkSize=1):
         raise Exception('Error in reading file!')
     finally:
         meta = record_meta_data(path, content)
+        
         return content, meta
     
 
@@ -47,8 +51,8 @@ def reconstruct_file(fileContent, path, metaData=None):
     #   path: the path to be written to. The filename is not given
     # Return: None
     if metaData:
-        fileName = metaData.fileName
-        hash = metaData.hash
+        fileName = metaData.getFileName()
+        hash = metaData.getHash()
     else:
         fileName = 'Not-Given'
         hash = ''
@@ -60,20 +64,27 @@ def reconstruct_file(fileContent, path, metaData=None):
         with open(path, 'wb') as f:
             print('Reconstructing file...')
             for chunk in fileContent:
+                # Different in py2.7 and py3.6...
                 f.write(chunk)
+
             print('Done!')
     except:
         raise Exception('Error in writting file!')
 
     # check hash
     recover_hash = _HASH_FUNC_(b''.join(fileContent)).hexdigest()
+
+    # print(recover_hash)
     if hash != recover_hash:
         print('Warning: Hash does not match!')
     
 
+
 # Test
-if __name__ =='__main__':
-    path = '/Users/xuxueyang/Desktop/04-dynamic-programming.pdf'
-    content, meta = read_file_as_bytes(path, chunkSize=10)
-    path1 = '/Users/xuxueyang/Downloads'
+if __name__ == '__main__':
+    path = '/Users/xuxueyang/Pictures/1.pic.jpg'
+    path1 = '/Users/xuxueyang/Desktop/ECE6102-Dependable-Distributed-System/Web-Secret_Sharing'
+
+    content, meta = read_file_as_bytes(path, chunkSize=1)
+
     reconstruct_file(content, path1, meta)
