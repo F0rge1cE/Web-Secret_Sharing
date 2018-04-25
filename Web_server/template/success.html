@@ -49,32 +49,32 @@
       </div>
     </div>
     <div class="container">
-      Welcome to encrypt your file!
+      {% if encrypt %}
+
+        <p>Finish encrypt! The shares are sent to the gaven emails!</p>
+
+      {% endif %}
+
+      {% if decrypt %}
+
+        <p>Finish reconstructing! Click to download the original file!</p>
+
+      {% endif %}
 
       <br>
       <br>
-      Please input detail information and upload the file:
 
-      <form action="/success" method="get">
-
-
-        <div>
-          <label>File name: </label>
-          <input type="text" name="name">
-        </div>
-
-        <div>
-          <label>Total number of shares you want to generate:</label>
-          <input type="text" name="N_share">
-        </div>
-
-        <div>
-          <label>Number of shares required to reconstruct the original file: </label>
-          <input type="text" name="K_require">
-        </div>
-
-        <button type="submit">Encrypt it!</button>
+      <form action="/" method="get">
+        <button>Return to main page!</button>
       </form>
+<!--       <form action="/" method="get">
+
+        <div>
+          <label>Upload your shares:</label>
+        </div>
+
+        <button type="submit">Reconstruct it!</button>
+      </form> -->
 
       <a href="{{ url|safe }}">{{ url_linktext }}</a>
     </div>
