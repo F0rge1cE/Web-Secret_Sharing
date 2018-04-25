@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import random
+import bytesINT
 
 # _PRIME = 277
 _PRIME = 8476168039
@@ -34,20 +35,6 @@ def inv_mod(denominator, prime):
 	# return (prime + r) % prime
 	return r
 
-def bytes_to_int(a):
-	# Transform bytes to int
-	# Param:
-	#	a: given input
-	# Return: integer calculated by input 
-	b = bytearray()
-	b.extend(map(ord,a))
-	print (list(b))
-	c = 0
-	for num in b:
-		c = (c << 8) + num
-	print(c)
-	return c
-
 def generate_polynomial(segment, shares, required, prime = _PRIME):
 	# Generate random polynomial based on parameters
 	# Param:
@@ -57,7 +44,7 @@ def generate_polynomial(segment, shares, required, prime = _PRIME):
 	# Return: List of shares, length = shares
 	# bound = math.pow(2,8) #bound can be change accordingly to prime number
 	bound = prime
-	secret = bytes_to_int(segment)
+	secret = bytesINT.bytes_to_int(segment)
 	# secret = segment
 	coefficients = []
 	for i in range(required-1):
@@ -111,5 +98,5 @@ def reconstruct(share_list, k, prime = _PRIME):
 		secret = (secret + prime + y[i] * multiplication) % prime
 	return secret
 
-print(reconstruct(generate_polynomial('\xfe\xcd\xa0\xfd', 5, 4),4))
+# print(reconstruct(generate_polynomial('\xfe\xcd\xa0\xfd', 5, 4),4))
 # print('\xfe\xcd\xa0\xfd')
