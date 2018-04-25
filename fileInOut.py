@@ -4,7 +4,8 @@ from metaDataModel import metaData
 
 _HASH_FUNC_ = hashlib.sha256
 
-def record_meta_data(path, fileContent):
+
+def record_meta_data(path, fileContent, lastChunkSize):
     # Calculate the Hash and name of the file
     # Param: 
     #   path: path of file
@@ -16,7 +17,7 @@ def record_meta_data(path, fileContent):
     hash = _HASH_FUNC_(b''.join(fileContent)).hexdigest()
 
     # Set meta data here.
-    meta = metaData(fullName, hash)
+    meta = metaData(fullName, hash, lastChunkSize=lastChunkSize)
     return meta
 
 
@@ -38,7 +39,7 @@ def read_file_as_bytes(path, chunkSize=1):
     except:
         raise Exception('Error in reading file!')
     finally:
-        meta = record_meta_data(path, content)
+        meta = record_meta_data(path, content, len(content[-1]))
         
         return content, meta
     
@@ -66,8 +67,6 @@ def reconstruct_file(fileContent, path, metaData=None):
             for chunk in fileContent:
                 # Different in py2.7 and py3.6...
                 f.write(chunk)
-
-            print('Done!')
     except:
         raise Exception('Error in writting file!')
 
@@ -76,7 +75,10 @@ def reconstruct_file(fileContent, path, metaData=None):
 
     # print(recover_hash)
     if hash != recover_hash:
+        print('Done...')
         print('Warning: Hash does not match!')
+    else:
+        print("Successfully reconstructed!")
     
 
 

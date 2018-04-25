@@ -1,10 +1,11 @@
 class metaData(object):
-    def __init__(self, fileName, hash, N_shares=1, K_required=1):
+    def __init__(self, fileName, hash, N_shares=1, K_required=1, lastChunkSize = 0):
         self.__fileName = fileName
         self.__hash = hash
         self.__N_shares = N_shares
         self.__K_required = K_required
         self.__sharesHash = []
+        self.lastChunkSize = lastChunkSize
     
     @property
     def Hash(self):
