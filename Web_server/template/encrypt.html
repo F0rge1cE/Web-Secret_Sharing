@@ -41,7 +41,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">App Engine Guestbook</a>
+          <a class="brand" href="#">Secret Sharing</a>
           <div class="nav-collapse collapse pull-right">
             <a href="{{ url|safe }}" class="btn">{{ url_linktext }}</a>
           </div>
@@ -49,33 +49,31 @@
       </div>
     </div>
     <div class="container">
-      <!-- [START greetings] -->
-      {% for greeting in greetings %}
-      <div class="row">
-        {% if greeting.author %}
-          <b>{{ greeting.author.email }}
-            {% if user and user.user_id() == greeting.author.identity %}
-              (You)
-            {% endif %}
-          </b> wrote:
-        {% else %}
-          An anonymous person wrote:
-        {% endif %}
-        <blockquote>{{ greeting.content }}</blockquote>
-      </div>
-      {% endfor %}
-      <!-- [END greetings] -->
+      Welcome to encrypt your file!
 
-      <form action="/sign?guestbook_name={{ guestbook_name }}" method="post">
-        <div><textarea name="content" class="input-block-level" rows="3"></textarea></div>
-        <div><input type="submit" class="btn btn-large btn-primary" value="Sign Guestbook"></div>
-      </form>
+      <br>
+      <br>
+      Please input detail information and upload the file:
 
-      <hr>
+      <form action="/success" method="get">
 
-      <form>Guestbook name:
-        <input value="{{ guestbook_name }}" name="guestbook_name">
-        <input type="submit" value="switch">
+
+        <div>
+          <label>File name: </label>
+          <input type="text" name="name">
+        </div>
+
+        <div>
+          <label>Total number of shares you want to generate: </label>
+          <input type="text" name="N_share">
+        </div>
+
+        <div>
+          <label>Number of shares required to reconstruct the original file: </label>
+          <input type="text" name="K_require">
+        </div>
+
+        <button type="submit">Encrypt it!</button>
       </form>
 
       <a href="{{ url|safe }}">{{ url_linktext }}</a>
