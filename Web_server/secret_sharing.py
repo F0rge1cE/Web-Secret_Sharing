@@ -53,6 +53,16 @@ class Author(ndb.Model):
     email = ndb.StringProperty(indexed=False)
 
 
+class File(ndb.Model):
+
+    filt_name = ndb.StringProperty(indexed=False)
+    N_share = ndb.StringProperty(indexed=False)
+    K_require = ndb.StringProperty(indexed=False)
+    hash_value = ndb.StringProperty(indexed=False)
+
+
+
+
 class Greeting(ndb.Model):
     """A main model for representing an individual Guestbook entry."""
     author = ndb.StructuredProperty(Author)
@@ -87,7 +97,7 @@ class MainPage(webapp2.RequestHandler):
             'url_linktext': url_linktext,
         }
 
-        template = JINJA_ENVIRONMENT.get_template('index.html')
+        template = JINJA_ENVIRONMENT.get_template('./template/main.html')
         self.response.write(template.render(template_values))
 # [END main_page]
 
