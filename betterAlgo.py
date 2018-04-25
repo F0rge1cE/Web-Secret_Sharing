@@ -4,23 +4,34 @@ import random
 
 _PRIME = 277
 
+def ext_euclid(a, b):
+	# Use Extended Euclidean algorithm s.t. ax + by = gcd(a,b)
+	# Param:
+	#	a: given a
+	#	b: given b
+	# Return: x , y, gcd(a,b)
+	if b == 0:
+		return 1, 0, a
+	else:
+		x, y, q = ext_euclid(b, a % b) # q = gcd(a, b) = gcd(b, a%b)
+		x, y = y, (x - (a // b) * y)
+		return x, y, q
 
 
-def gcd(a, b):
-    if a == 0:
-        return (b, 0, 1)
-    else:
-        g, y, x = gcd(b % a, a)
-        return (g, x - (b // a) * y, y)
+def inv_mod(denominator, prime):
+	# Calculate inverse mod s.t. inv_mod(denominator, prime) ^ -1 = denominator % denominator
+	# Param:
+	#	denominator: given denominator
+	#	prime: selected prime number
+	# Return: inverse mod 
 
-
-def inv_mod(k, prime):
-    k = k % prime
-    if k < 0:
-        r = gcd(prime, -k)[2]
-    else:
-        r = gcd(prime, k)[2]
-    return (prime + r) % prime
+	# k = k % prime
+	# if k < 0:
+	#     r = gcd(prime, -k)[2]
+	# else:
+	r = ext_euclid(denominator, prime)[0]
+	# return (prime + r) % prime
+	return r
 
 def generate_polynomial(segment, shares, required, prime = _PRIME):
 	# Generate random polynomial based on parameters
@@ -29,7 +40,7 @@ def generate_polynomial(segment, shares, required, prime = _PRIME):
 	#	shares: number of wanted shares
 	#	required: number of required share to reconstruct polynomial
 	# Return: List of shares, length = shares
-	bound = math.pow(2,8)
+	bound = math.pow(2,8) #bound can be change accordingly to prime number
 	secret = ord(segment)
 	coefficients = []
 	for i in range(required-1):
