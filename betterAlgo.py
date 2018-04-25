@@ -47,7 +47,7 @@ def generate_polynomial(segment, shares, required, prime = _PRIME):
 		random_coeff = random.randint(1, bound-1)
 		coefficients.append(random_coeff)
 	coefficients.append(secret)
-	# print(coefficients)
+	print(coefficients)
 	return get_points(coefficients, shares, prime)
 
 def get_points(coefficients, shares, prime):
@@ -56,18 +56,23 @@ def get_points(coefficients, shares, prime):
 	#	coefficients: given byte
 	#	shares: number of wanted shares
 	# Return: List of shares, length = shares
-	rev_coef = reversed(coefficients)
+	# rev_coef = reversed(coefficients)
+	# print(rev_coef)
 	points = []
 
 	for x in range(0,shares+1):
 		idx = 0
 		y = 0
-		for coef in rev_coef:
+		for coef in coefficients[::-1]:
 			variable = (x**idx) % prime
+			print(variable)
 			idx += 1
 			multiplication = coef * variable  % prime
+			print(multiplication)
 			y = (y + multiplication) % prime 
+			print(y)
 		points.append((x,y))
+	print(points)
 	return points
 
 def reconstruct(share_list, k, prime = _PRIME):
