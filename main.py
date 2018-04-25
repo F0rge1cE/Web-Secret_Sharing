@@ -5,6 +5,7 @@ import time
 from fileInOut import *
 # from testalgo import *
 from betterAlgo import *
+import bytesINT
 
 if sys.version > '3':
     PY3 = True
@@ -19,7 +20,7 @@ if __name__ == '__main__':
 
     N = 10
     K = 6
-    chunkSize = 1
+    chunkSize = 4
 
     content, meta = read_file_as_bytes(path, chunkSize=chunkSize)
 
@@ -35,16 +36,17 @@ if __name__ == '__main__':
         byteShare = generate_polynomial(c, N, K)
         allShare.append(byteShare)
 
+        # log
         progress += chunkSize
         percent = progress * 1.0 / totalBytes
         if time.time() - tick > 5.0:
             print(
-                "{0}% done, cost {1} second".format(int(percent * 100), (time.time() - tick))
+                "{0}% done.".format(int(percent * 100))
             )
             tick = time.time()
 
 
-    print("Encrypting Cost: {0} secdong".format(time.time() - startTime))
+    print("Encrypting Cost: {0} seconds".format(time.time() - startTime))
 
     ######
     re_content = []
@@ -58,10 +60,11 @@ if __name__ == '__main__':
 
         if not PY3:
             re_content.append(
-                str(
-                    bytearray([recons_share])
-                    )
+                # Formalize int to bytes here!!
+                bytesINT.int_to_bytes(recons_share, chunkSize)
             )  # works on python 2.7
+
+
         else:
             re_content.append(bytes([recons_share]))    # works on python 3.6
 
@@ -70,4 +73,9 @@ if __name__ == '__main__':
     # print(meta.Hash)
 
     reconstruct_file(re_content, path1, meta)
+
+
+    for x in zip(re_content, content):
+        if x[0] != x[1]:
+            print(x)
     
