@@ -103,11 +103,7 @@ class MainPage(webapp2.RequestHandler):
 
 class Encrypt(webapp2.RequestHandler):
     def get(self):
-        # guestbook_name = self.request.get('guestbook_name',
-        #                                   DEFAULT_GUESTBOOK_NAME)
-        # greetings_query = Greeting.query(
-        #     ancestor=guestbook_key(guestbook_name)).order(-Greeting.date)
-        # greetings = greetings_query.fetch(10)
+
         user = users.get_current_user()
         if user:
             url = users.create_logout_url(self.request.uri)
@@ -124,6 +120,12 @@ class Encrypt(webapp2.RequestHandler):
 
         template = JINJA_ENVIRONMENT.get_template('./template/encrypt.html')
         self.response.write(template.render(template_values))
+
+    def post(self):
+        query_params = {
+            'encrypt': True,
+        }
+        self.redirect('/success?' + urllib.urlencode(query_params))
 
 
 # [START guestbook]
@@ -149,9 +151,17 @@ class Decrypt(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('./template/decrypt.html')
         self.response.write(template.render(template_values))
 
+    def post(self):
+        query_params = {
+            'decrypt': True,
+        }
+        self.redirect('/success?' + urllib.urlencode(query_params))
+
 class Success(webapp2.RequestHandler):
 
     def get(self):
+        encrypt = self.request.get('encrypt', False)
+        decrypt = self.request.get('decrypt', False)
         user = users.get_current_user()
         if user:
             url = users.create_logout_url(self.request.uri)
@@ -164,6 +174,8 @@ class Success(webapp2.RequestHandler):
             'user': user,
             'url': url,
             'url_linktext': url_linktext,
+            'decrypt' : decrypt,
+            'encrypt' : encrypt
         }
 
         template = JINJA_ENVIRONMENT.get_template('./template/success.html')
