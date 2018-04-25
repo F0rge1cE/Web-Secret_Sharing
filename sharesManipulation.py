@@ -26,6 +26,8 @@ def decode(path):
         share_content = pickle.load(f)
     return share_content
 
+def writeSharesToFile():
+    pass
 
 def paddingAtTail():
     pass

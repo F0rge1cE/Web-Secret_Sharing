@@ -45,5 +45,5 @@ def reconstruct(share_list, k):
 	# Return: secret
 	x, y = zip(*share_list)
 	res = np.polyfit(x,y,k-1)
-	return np.around(res).astype(int).astype(bytes)[-1]
+	return np.around(res).astype(int)[-1]
 print(reconstruct(generate_polynomial('t', 5, 4),4))

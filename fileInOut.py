@@ -51,8 +51,8 @@ def reconstruct_file(fileContent, path, metaData=None):
     #   path: the path to be written to. The filename is not given
     # Return: None
     if metaData:
-        fileName = metaData.getFileName()
-        hash = metaData.getHash()
+        fileName = metaData.FileName
+        hash = metaData.Hash
     else:
         fileName = 'Not-Given'
         hash = ''

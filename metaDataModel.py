@@ -6,16 +6,23 @@ class metaData(object):
         self.__K_required = K_required
         self.__sharesHash = []
     
-    def getHash(self):
+    @property
+    def Hash(self):
         return self.__hash
     
-    def getFileName(self):
+    @property
+    def FileName(self):
         return self.__fileName
 
-    def getTotalShares(self):
+    @property
+    def N_shares(self):
         return self.__N_shares
     
-    def getRequiredShares(self):
+    @property
+    def K_required(self):
         return self.__K_required
+
+    def setN():
+        pass
     
 
