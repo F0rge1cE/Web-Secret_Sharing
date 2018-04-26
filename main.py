@@ -1,9 +1,7 @@
 import sys
 import time
 
-# Own package
 from fileInOut import *
-# from testalgo import *
 from betterAlgo import *
 import bytesINT
 
@@ -15,7 +13,7 @@ else:
 if __name__ == '__main__':
     # path = '/Users/xuxueyang/Pictures/1.pic.jpg'
     # path1 = '/Users/xuxueyang/Desktop/ECE6102-Dependable-Distributed-System/Web-Secret_Sharing'
-    path = '/Users/xuxueyang/Desktop/cracking-coding-interview-6th-programming-copy-part2.pdf'
+    path = '/Users/xuxueyang/Desktop/cracking-coding-interview-6th-programming.pdf'
     path1 = '/Users/xuxueyang/Desktop/ECE6102-Dependable-Distributed-System/Web-Secret_Sharing'
 
     N = 10

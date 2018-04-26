@@ -23,7 +23,7 @@ class metaData(object):
     def K_required(self):
         return self.__K_required
 
-    def setN():
-        pass
+    def setN(self, n):
+        self.__N_shares = n
     
 

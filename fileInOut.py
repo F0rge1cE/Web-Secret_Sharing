@@ -75,10 +75,10 @@ def reconstruct_file(fileContent, path, metaData=None):
 
     # print(recover_hash)
     if hash != recover_hash:
-        print('Done...')
+        print('Done...BUT: ')
         print('Warning: Hash does not match!')
     else:
-        print("Successfully reconstructed!")
+        print("Successfully reconstruct the file: {0}".format(fileName))
     
 
 
