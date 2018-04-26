@@ -2,7 +2,7 @@
 Serialize & deserialize the combined shares. 
 '''
 import pickle
-_CHUNK_SIZE_ = 1
+
 
 # def combineShares(shares):
 #     # Param: 

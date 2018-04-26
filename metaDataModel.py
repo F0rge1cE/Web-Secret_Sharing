@@ -25,5 +25,8 @@ class metaData(object):
 
     def setN(self, n):
         self.__N_shares = n
+
+    def setK(self, k):
+        self.__K_required = n
     
 
