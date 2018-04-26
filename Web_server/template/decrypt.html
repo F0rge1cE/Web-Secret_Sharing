@@ -57,7 +57,7 @@
       <br>
       Please input detail information and upload the file:
 
-      <form action="/decrypt" method="post">
+      <form action="/decrypt" method="post" enctype="multipart/form-data">
 
 
         <div>
@@ -68,7 +68,7 @@
         <div>
           <label>Upload your shares:</label>
 
-          <input type="file" id="fileinput" multiple="multiple"/>
+          <input type="file" multiple="multiple"/ name="raw_file">
         </div>
         <br>
         <br>

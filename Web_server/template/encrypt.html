@@ -57,7 +57,7 @@
       <br>
       Please input detail information and upload the file:
 
-      <form action="/encrypt" method="post">
+      <form action="/encrypt" method="post" enctype="multipart/form-data">
 
         <div>
           <label>File name: </label>
@@ -75,7 +75,8 @@
         </div>
 
         <div>
-          <input type="file" id="fileinput"/>
+          <input type="file" name="raw_file"/>
+
         </div>
         <br>
         <br>

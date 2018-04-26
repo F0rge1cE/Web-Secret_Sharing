@@ -114,6 +114,13 @@ class Encrypt(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
     def post(self):
+
+        file = self.request.POST.get('raw_file').file.read()
+
+        print("****************************************")
+        print(file)
+        print("add encrypt algorithm here")
+        print("****************************************")
         query_params = {
             'encrypt': True,
         }
@@ -144,6 +151,13 @@ class Decrypt(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
     def post(self):
+        file = self.request.POST.getall('raw_file')
+        for f in file:
+            sub_file = f.file.read()
+            print("****************")
+            print(sub_file)
+        # add reconstruct algorithm here
+        
         query_params = {
             'decrypt': True,
         }
