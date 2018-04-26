@@ -15,12 +15,12 @@ else:
 if __name__ == '__main__':
     # path = '/Users/xuxueyang/Pictures/1.pic.jpg'
     # path1 = '/Users/xuxueyang/Desktop/ECE6102-Dependable-Distributed-System/Web-Secret_Sharing'
-    path = '/Users/xuxueyang/Desktop/04-dynamic-programming.pdf'
+    path = '/Users/xuxueyang/Desktop/cracking-coding-interview-6th-programming-copy-part2.pdf'
     path1 = '/Users/xuxueyang/Desktop/ECE6102-Dependable-Distributed-System/Web-Secret_Sharing'
 
     N = 10
     K = 6
-    chunkSize = 4
+    chunkSize = 255 # num of bytes read each time
 
     content, meta = read_file_as_bytes(path, chunkSize=chunkSize)
 
@@ -50,30 +50,34 @@ if __name__ == '__main__':
 
     ######
     re_content = []
+
     print('decrypting..')
     startTime = time.time()
+    progress = 0
+    tick = time.time()
 
-    for s in allShare:
-        share_list = list(s)[1:7]
-        # print(share_list)
+    for i in range(len(allShare)):
+        share_list = list(allShare[i])[1:7]
         recons_share = reconstruct(share_list, K)
 
-        if not PY3:
-            re_content.append(
-                # Formalize int to bytes here!!
-                bytesINT.int_to_bytes(recons_share, chunkSize)
-            )  # works on python 2.7
+        re_content.append(
+            bytesINT.int_to_bytes(
+                    recons_share, 
+                    meta.lastChunkSize if i == len(allShare) - 1 else chunkSize)
+            )
 
+        progress += chunkSize
+        percent = progress * 1.0 / totalBytes
+        if time.time() - tick > 5.0:
+            print(
+                "{0}% done.".format(int(percent * 100))
+            )
+            tick = time.time()
 
-        else:
-            re_content.append(bytes([recons_share]))    # works on python 3.6
+    print("Decrypting Cost: {0} seconds".format(time.time() - startTime))
 
-    print("Eecrypting Cost: {0} secdong", [time.time() - startTime])
-
-    # print(meta.Hash)
 
     reconstruct_file(re_content, path1, meta)
-
 
     for x in zip(re_content, content):
         if x[0] != x[1]:
