@@ -181,9 +181,9 @@ class Encrypt(webapp2.RequestHandler):
 
 
             query_params = {
-                'encrypt': True,
+                'num' : N_share
             }
-            self.redirect('/success?' + urllib.urlencode(query_params))
+            self.redirect('/email?' + urllib.urlencode(query_params))
 
 
 # [START guestbook]
@@ -256,12 +256,45 @@ class Success(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('./template/success.html')
         self.response.write(template.render(template_values))
 
+class Email(webapp2.RequestHandler):
+
+    def get(self):
+        num = int(self.request.get('num'))
+        user = users.get_current_user()
+        if user:
+            url = users.create_logout_url(self.request.uri)
+            url_linktext = 'Logout'
+        else:
+            url = users.create_login_url(self.request.uri)
+            url_linktext = 'Login'
+
+        lis = []
+        for i in range(num):
+            lis.append(i + 1)
+        template_values = {
+            'user': user,
+            'url': url,
+            'url_linktext': url_linktext,
+            'lis' : lis
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('./template/email.html')
+        self.response.write(template.render(template_values))
+
+    def post(self):
+
+        query_params = {
+            'encrypt': True,
+        }
+        self.redirect('/success?' + urllib.urlencode(query_params))
+
 
 # [START app]
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/encrypt', Encrypt),
     ('/decrypt', Decrypt),
-    ('/success', Success)
+    ('/success', Success),
+    ('/email', Email)
 ], debug=True)
 # [END app]
