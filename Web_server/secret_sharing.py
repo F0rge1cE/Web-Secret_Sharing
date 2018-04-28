@@ -24,6 +24,7 @@ from google.appengine.ext import ndb
 import httplib2
 import os
 import oauth2client
+from oauth2client import file 
 # from oauth2client import client, tools
 import base64
 from email.mime.multipart import MIMEMultipart
@@ -55,12 +56,15 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 def get_credentials():
     credential_path = "gs://ece6102assignment4.appspot.com/gmail-python-email-send.json"
     store = oauth2client.file.Storage(credential_path)
+    print("=========================")
+    print(store)
     credentials = store.get()
-    if not credentials or credentials.invalid:
-        flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
-        flow.user_agent = APPLICATION_NAME
-        credentials = tools.run_flow(flow, store)
-        print('Storing credentials to ' + credential_path)
+    print(credentials)
+    # if not credentials or credentials.invalid:
+    #     flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
+    #     flow.user_agent = APPLICATION_NAME
+    #     credentials = tools.run_flow(flow, store)
+    #     print('Storing credentials to ' + credential_path)
     return credentials
 
 def SendMessage(sender, to, subject, msgHtml, msgPlain, attachmentFile=None):
