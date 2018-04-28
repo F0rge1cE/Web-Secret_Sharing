@@ -24,7 +24,7 @@ from google.appengine.ext import ndb
 import httplib2
 import os
 import oauth2client
-from oauth2client import client, tools
+# from oauth2client import client, tools
 import base64
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -48,51 +48,50 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     autoescape=True)
 # [END imports]
 
-# def get_credentials():
-#     home_dir = os.path.expanduser('~')
-#     credential_dir = os.path.join(home_dir, '.credentials')
-#     if not os.path.exists(credential_dir):
-#         os.makedirs(credential_dir)
-#     credential_path = os.path.join(credential_dir,
-#                                    'gmail-python-email-send.json')
-#     store = oauth2client.file.Storage(credential_path)
-#     credentials = store.get()
-#     if not credentials or credentials.invalid:
-#         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
-#         flow.user_agent = APPLICATION_NAME
-#         credentials = tools.run_flow(flow, store)
-#         print('Storing credentials to ' + credential_path)
-#     return credentials
+#credentials = "{\"_module\": \"oauth2client.client\", \"scopes\": [\"https://www.googleapis.com/auth/gmail.send\"], \"token_expiry\": \"2018-04-27T01:41:48Z\", \"id_token\": null, \"user_agent\": \"Gmail API Python Send Email\", \"access_token\": \"ya29.GluqBfm7tHkiGhpWHPvMzUCRdOyCfon9miwBQ93iJxAe66wNKwHauiBlxRX8GRQ1mNZgUDqa7MLA9B2qQulgWtCywqv7loC4oHWwKvnTzDMOdNrnRTj7sHKz8-Va\", \"token_uri\": \"https://accounts.google.com/o/oauth2/token\", \"invalid\": false, \"token_response\": {\"access_token\": \"ya29.GluqBfm7tHkiGhpWHPvMzUCRdOyCfon9miwBQ93iJxAe66wNKwHauiBlxRX8GRQ1mNZgUDqa7MLA9B2qQulgWtCywqv7loC4oHWwKvnTzDMOdNrnRTj7sHKz8-Va\", \"token_type\": \"Bearer\", \"expires_in\": 3600, \"refresh_token\": \"1/3SpW0ZEuRuZMRn-Z6AV0okdFTxL08ZFPB3Uqm28V7Fw\"}, \"client_id\": \"979304700747-8q6rmdjq28q5idrkqnltuerl84fcqci8.apps.googleusercontent.com\", \"token_info_uri\": \"https://www.googleapis.com/oauth2/v3/tokeninfo\", \"client_secret\": \"BBZd_jUgiOTwKfDGroUZyvIP\", \"revoke_uri\": \"https://accounts.google.com/o/oauth2/revoke\", \"_class\": \"OAuth2Credentials\", \"refresh_token\": \"1/3SpW0ZEuRuZMRn-Z6AV0okdFTxL08ZFPB3Uqm28V7Fw\", \"id_token_jwt\": null}"
 
-# def SendMessage(sender, to, subject, msgHtml, msgPlain, attachmentFile=None):
-#     credentials = get_credentials()
-#     http = credentials.authorize(httplib2.Http())
-#     service = apiclient.discovery.build('gmail', 'v1', http=http)
-#     if attachmentFile:
-#         message1 = createMessageWithAttachment(sender, to, subject, msgHtml, msgPlain, attachmentFile)
-#     else: 
-#         message1 = CreateMessageHtml(sender, to, subject, msgHtml, msgPlain)
-#     result = SendMessageInternal(service, "me", message1)
-#     return result
 
-# def SendMessageInternal(service, user_id, message):
-#     try:
-#         message = (service.users().messages().send(userId=user_id, body=message).execute())
-#         print('Message Id: %s' % message['id'])
-#         return message
-#     except apiclient.errors.HttpError as error:
-#         print('An error occurred: %s' % error)
-#         return "Error"
-#     return "OK"
 
-# def CreateMessageHtml(sender, to, subject, msgHtml, msgPlain):
-#     msg = MIMEMultipart('alternative')
-#     msg['Subject'] = subject
-#     msg['From'] = sender
-#     msg['To'] = to
-#     msg.attach(MIMEText(msgPlain, 'plain'))
-#     msg.attach(MIMEText(msgHtml, 'html'))
-#     return {'raw': base64.urlsafe_b64encode(msg.as_string())}
+def get_credentials():
+    credential_path = "gs://ece6102assignment4.appspot.com/gmail-python-email-send.json"
+    store = oauth2client.file.Storage(credential_path)
+    credentials = store.get()
+    if not credentials or credentials.invalid:
+        flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
+        flow.user_agent = APPLICATION_NAME
+        credentials = tools.run_flow(flow, store)
+        print('Storing credentials to ' + credential_path)
+    return credentials
+
+def SendMessage(sender, to, subject, msgHtml, msgPlain, attachmentFile=None):
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = apiclient.discovery.build('gmail', 'v1', http=http)
+    if attachmentFile:
+        message1 = createMessageWithAttachment(sender, to, subject, msgHtml, msgPlain, attachmentFile)
+    else: 
+        message1 = CreateMessageHtml(sender, to, subject, msgHtml, msgPlain)
+    result = SendMessageInternal(service, "me", message1)
+    return result
+
+def SendMessageInternal(service, user_id, message):
+    try:
+        message = (service.users().messages().send(userId=user_id, body=message).execute())
+        print('Message Id: %s' % message['id'])
+        return message
+    except apiclient.errors.HttpError as error:
+        print('An error occurred: %s' % error)
+        return "Error"
+    return "OK"
+
+def CreateMessageHtml(sender, to, subject, msgHtml, msgPlain):
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = subject
+    msg['From'] = sender
+    msg['To'] = to
+    msg.attach(MIMEText(msgPlain, 'plain'))
+    msg.attach(MIMEText(msgHtml, 'html'))
+    return {'raw': base64.urlsafe_b64encode(msg.as_string())}
 
 
 
@@ -176,7 +175,7 @@ class Encrypt(webapp2.RequestHandler):
             subject = "subject"
             msgHtml = file
             msgPlain = "Hi\nPlain Email"
-            #SendMessage(sender, to, subject, msgHtml, msgPlain)
+            SendMessage(sender, to, subject, msgHtml, msgPlain)
 
 
 
@@ -282,7 +281,11 @@ class Email(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
     def post(self):
-
+        email = self.request.POST.getall('email')
+        print("*********************************")
+        for i in email:
+            print(i)
+        print("*********************************")
         query_params = {
             'encrypt': True,
         }

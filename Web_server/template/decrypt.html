@@ -2,9 +2,6 @@
 {% autoescape true %}
 <html>
   <head>
-    <!-- [START css] -->
-<!--     <link type="text/css" rel="stylesheet" href="/bootstrap/css/bootstrap.css">
-    <link type="text/css" rel="stylesheet" href="/bootstrap/css/bootstrap-responsive.css"> -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 
     <!-- [END css] -->
@@ -69,21 +66,29 @@
 
       <form action="/decrypt" method="post" enctype="multipart/form-data">
 
-
-        <div>
-          <label>File name: </label>
-          <input type="text" name="name">
+        
+        <div class="form-group">
+          <label for="exampleFormControlInput1">File name: </label>
+          <input type="text" class="form-control" name="name" required>
         </div>
+
 
         <div>
           <label>Upload your shares:</label>
 
-          <input type="file" multiple="multiple"/ name="raw_file">
+<!--           <input type="file" multiple="multiple"/ name="raw_file"> -->
+
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="validatedCustomFile" name="raw_file" multiple="multiple" required>
+            <label class="custom-file-label" for="validatedCustomFile">Choose file...</label>
+            <div class="invalid-feedback">Please input a file!</div>
+          </div>
+
         </div>
         <br>
         <br>
 
-        <button type="submit">Reconstruct it!</button>
+        <button type="submit" class="btn btn-primary">Reconstruct it!</button>
       </form>
 
     </div>

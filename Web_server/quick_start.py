@@ -121,7 +121,7 @@ def createMessageWithAttachment(
 
 
 def main():
-    to = "xuxy1994@gmail.com"
+    to = "lixinyu513@gmail.com"
     sender = "guoyuanwu666@gmail.com"
     subject = "subject"
     msgHtml = "Hi Html Email"
