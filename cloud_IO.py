@@ -128,8 +128,22 @@ class CombinedShare(object):
         return re_content, self.meta
 
 
+# Example of how to use it...
+if __name__ == '__main__':
+    shares = CombinedShare()
 
+    # Encrypt given data..
+    allShares, meta = shares.DirectEncrypt(content_original, fileName, N_shares, K_required)
+
+    # For decryption, add each share
+    for shareString in share_list:
+        shares.addNewShare(shareString)
     
+    # After add all shares
+    original_data, meta = shares.decryptAndReconstruct()
+    
+    
+
 
 
 
