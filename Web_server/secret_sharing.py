@@ -20,6 +20,7 @@ import urllib
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
+from google.appengine.api import mail, app_identity
 
 import httplib2
 import os
@@ -29,8 +30,10 @@ from oauth2client import file
 import base64
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import apiclient
-#from apiclient import errors, discovery
+#import apiclient
+import googleapiclient
+from googleapiclient import discovery
+#from apiclient import discovery
 import mimetypes
 from email.mime.image import MIMEImage
 from email.mime.audio import MIMEAudio
@@ -48,57 +51,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 # [END imports]
-
-#credentials = "{\"_module\": \"oauth2client.client\", \"scopes\": [\"https://www.googleapis.com/auth/gmail.send\"], \"token_expiry\": \"2018-04-27T01:41:48Z\", \"id_token\": null, \"user_agent\": \"Gmail API Python Send Email\", \"access_token\": \"ya29.GluqBfm7tHkiGhpWHPvMzUCRdOyCfon9miwBQ93iJxAe66wNKwHauiBlxRX8GRQ1mNZgUDqa7MLA9B2qQulgWtCywqv7loC4oHWwKvnTzDMOdNrnRTj7sHKz8-Va\", \"token_uri\": \"https://accounts.google.com/o/oauth2/token\", \"invalid\": false, \"token_response\": {\"access_token\": \"ya29.GluqBfm7tHkiGhpWHPvMzUCRdOyCfon9miwBQ93iJxAe66wNKwHauiBlxRX8GRQ1mNZgUDqa7MLA9B2qQulgWtCywqv7loC4oHWwKvnTzDMOdNrnRTj7sHKz8-Va\", \"token_type\": \"Bearer\", \"expires_in\": 3600, \"refresh_token\": \"1/3SpW0ZEuRuZMRn-Z6AV0okdFTxL08ZFPB3Uqm28V7Fw\"}, \"client_id\": \"979304700747-8q6rmdjq28q5idrkqnltuerl84fcqci8.apps.googleusercontent.com\", \"token_info_uri\": \"https://www.googleapis.com/oauth2/v3/tokeninfo\", \"client_secret\": \"BBZd_jUgiOTwKfDGroUZyvIP\", \"revoke_uri\": \"https://accounts.google.com/o/oauth2/revoke\", \"_class\": \"OAuth2Credentials\", \"refresh_token\": \"1/3SpW0ZEuRuZMRn-Z6AV0okdFTxL08ZFPB3Uqm28V7Fw\", \"id_token_jwt\": null}"
-
-
-
-def get_credentials():
-    credential_path = "gs://ece6102assignment4.appspot.com/gmail-python-email-send.json"
-    store = oauth2client.file.Storage(credential_path)
-    print("=========================")
-    print(store)
-    credentials = store.get()
-    print(credentials)
-    # if not credentials or credentials.invalid:
-    #     flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
-    #     flow.user_agent = APPLICATION_NAME
-    #     credentials = tools.run_flow(flow, store)
-    #     print('Storing credentials to ' + credential_path)
-    return credentials
-
-def SendMessage(sender, to, subject, msgHtml, msgPlain, attachmentFile=None):
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    service = apiclient.discovery.build('gmail', 'v1', http=http)
-    if attachmentFile:
-        message1 = createMessageWithAttachment(sender, to, subject, msgHtml, msgPlain, attachmentFile)
-    else: 
-        message1 = CreateMessageHtml(sender, to, subject, msgHtml, msgPlain)
-    result = SendMessageInternal(service, "me", message1)
-    return result
-
-def SendMessageInternal(service, user_id, message):
-    try:
-        message = (service.users().messages().send(userId=user_id, body=message).execute())
-        print('Message Id: %s' % message['id'])
-        return message
-    except apiclient.errors.HttpError as error:
-        print('An error occurred: %s' % error)
-        return "Error"
-    return "OK"
-
-def CreateMessageHtml(sender, to, subject, msgHtml, msgPlain):
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = subject
-    msg['From'] = sender
-    msg['To'] = to
-    msg.attach(MIMEText(msgPlain, 'plain'))
-    msg.attach(MIMEText(msgHtml, 'html'))
-    return {'raw': base64.urlsafe_b64encode(msg.as_string())}
-
-
-
 
 
 class File(ndb.Model):
@@ -157,7 +109,14 @@ class Encrypt(webapp2.RequestHandler):
 
     def post(self):
         try:
-            file = self.request.POST.get('raw_file').file.read()
+            #file = self.request.POST.get('raw_file').file.read()
+
+            uploaded_file = self.request.POST.get('raw_file')   # uploaded_file is an file object
+            content = uploaded_file.file.read()
+            file_name = uploaded_file.filename
+
+
+
         except:
             query_params = {
                 'except' : True
@@ -168,20 +127,9 @@ class Encrypt(webapp2.RequestHandler):
             N_share = self.request.get('N_share')
             K_require = self.request.get('K_require')
             print("****************************************")
-            print(file)
+            print(content)
             print("add encrypt algorithm here")
             print("****************************************")
-
-
-            #add gmail api here
-            to = "xuxy1994@gmail.com"
-            sender = "guoyuanwu666@gmail.com"
-            subject = "subject"
-            msgHtml = file
-            msgPlain = "Hi\nPlain Email"
-            SendMessage(sender, to, subject, msgHtml, msgPlain)
-
-
 
             query_params = {
                 'num' : N_share
@@ -216,6 +164,9 @@ class Decrypt(webapp2.RequestHandler):
 
     def post(self):
         try:
+
+
+
             file = self.request.POST.getall('raw_file')
             name = self.request.get('name')
             for f in file:
@@ -290,6 +241,19 @@ class Email(webapp2.RequestHandler):
         for i in email:
             print(i)
         print("*********************************")
+        for i in email:
+            mail.send_mail(sender='{}@ece6102assignment4.gserviceaccount.com'.format(
+            app_identity.get_application_id()),
+                       to=i,
+                       subject="Decrypted shareds",
+                       body="""
+                            Attached is the document file you requested.
+                            The example.com Team
+                            """,
+                       attachments=[("test.share", "heiheihei")])
+
+
+
         query_params = {
             'encrypt': True,
         }
