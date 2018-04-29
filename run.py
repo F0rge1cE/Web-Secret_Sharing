@@ -58,6 +58,53 @@ def readAndEncrypt(filePath, N_shares, K_required, chunkSize=1):
     return allShares, meta
 
 
+def DirectEncrypt(Content_all, path, N_shares, K_required, chunkSize=1):
+    # Directly encrypt the content (in list[bytes]) it into N shares.
+    # Param:
+    #   Content: A very large STRING (usually read by the web browser.)
+    #   path: the path of the file, only use for calculate the meta data here, not for reading!
+    #   N_shares: number of total shares to be generated
+    #   K_required: number of shares required to reconstruce the original file
+    #   chunkSize: Number of bytes read from file each time. CANNOT EXCEED LENGTH OF THE PRIME NUM!
+    # Return: List[string] - All N generated shares. Each share is a string.
+
+    totalBytes = len(Content_all)
+    # split the whole data into chunks
+    content = [Content_all[x:x + chunkSize] for x in totalBytes if x % chunkSize == 0] 
+    meta = fileInOut.record_meta_data(path, content, lastChunkSize = len(content[-1]))
+
+    allShares = []
+    totalBytes = len(content) * chunkSize - chunkSize + meta.lastChunkSize
+    progress = 0
+    print('Encrypting...')
+    startTime = time.time()
+
+    tick = time.time()
+    for c in content:
+        byteShares = betterAlgo.generate_polynomial(c, N_shares, K_required)
+        allShares.append(byteShares)
+
+        # Progress report every 5 seconds
+        progress += chunkSize
+        percent = progress * 1.0 / totalBytes
+        if time.time() - tick > 5.0:
+            print("{0:.2f}% done.".format(percent * 100))
+            tick = time.time()
+
+    # set some meta properties..
+    meta.totalBytes = totalBytes
+    meta.K_required = K_required
+    meta.N_shares = N_shares
+    meta.normalChunkSize = chunkSize
+    meta.totalSharesByBytes = len(content)
+    #####
+    # TODO: Save meta data.
+    #####
+
+    print("Encrypting Cost: {0} seconds".format(time.time() - startTime))
+    return allShares, meta
+
+
 def distributeShares(allShares, meta, *paths):
     # Generate share files and distribute them
     # Param:
@@ -82,7 +129,7 @@ def distributeShares(allShares, meta, *paths):
 
         # print(data_per_share)
 
-        sharesManipulation.encodeShare(
+        sharesManipulation.encodeShareToFile(
             data_per_share, paths[i % num_paths], meta)
             # allShares[i], paths[i % num_paths], meta)
 
@@ -98,12 +145,9 @@ def collectShares(meta, *sharePaths):
     #####
     allShares = [[] for _ in range(meta.totalSharesByBytes)]
     for path in sharePaths:
-        content, key = sharesManipulation.decodeShare(path)
-        # print(content)
+        content, key = sharesManipulation.decodeShareToFile(path)
         for i in range(meta.totalSharesByBytes):
             allShares[i].append(content[i])
-
-    # print(allShares)
 
     return allShares, key
 

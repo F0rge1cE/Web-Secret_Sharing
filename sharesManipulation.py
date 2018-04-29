@@ -1,9 +1,41 @@
 '''
 Serialize & deserialize the shares. 
+In memory OR to File.
 '''
 import pickle
+import StringIO
 
-def encodeShare(super_share_bytes, path, meta, serialMode=1):
+
+def encodeShareInMemory(super_share_bytes, meta, serialMode=0):
+    # Param:
+    #   super_share_bytes: List[bytes]
+    #   meta: meta of the original file
+    #   serialMode: serialization mode for Pickle
+    # Return: Pickled STRING
+
+    super_share_bytes = addKeyToShare(super_share_bytes, meta)
+
+    f = StringIO.StringIO()
+    pickle.dump(super_share_bytes, f, serialMode)
+    f.seek(0)   # reset the position
+    return f.buf
+
+
+def decodeShareInMemory(f):
+    # Unpickle the serialized string in memory.
+    # Param:
+    #   path: String or StringIO object.
+    # Return: KEY of the target file[0], Shares[1:]
+    if isinstance(f, str):
+        f = StringIO.StringIO(f)
+    f.seek(0)
+    share_content = pickle.load(f)
+    # print('decrypt: ', path, share_content)
+    return share_content[1:], share_content[0]
+
+
+
+def encodeShareToFile(super_share_bytes, path, meta, serialMode=0):
     # Param:
     #   super_share_bytes: List[bytes]
     #   path: path to store the serialization
@@ -18,7 +50,7 @@ def encodeShare(super_share_bytes, path, meta, serialMode=1):
     # print('encrypt: ', path,super_share_bytes)
 
 
-def decodeShare(path):
+def decodeShareToFile(path):
     # Param:
     #   path: path to store the serialization
     # Return: KEY of the target file[0], Shares[1:]
@@ -33,7 +65,7 @@ def addKeyToShare(share, fileMeta):
     #   path: original shares
     #   fileMeta: meta data of the file
     # Return: List[bytes]
-    return [fileMeta.KEY] + share
+    return [fileMeta] + share
 
 
 

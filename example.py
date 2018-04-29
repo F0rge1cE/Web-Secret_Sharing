@@ -22,17 +22,20 @@ file_path = '/Users/xuxueyang/Pictures/1.pic.jpg'
 decrypt_path = '/Users/xuxueyang/Desktop/ECE6102-Dependable-Distributed-System/Web-Secret_Sharing'
 
 # Where you want to put the shares in.
-share_paths = [
+encrypt_share_paths = [
     decrypt_path + '/shares/_' + str(x) + '.share' for x in range(N)]  # issue...
 
 # Generate shares and meta data for the original file
 allShares, meta = run.readAndEncrypt(file_path, N, K, ChunkSize)
 
 # Save shares to *share_paths
-run.distributeShares(allShares, meta, *share_paths)
+run.distributeShares(allShares, meta, *encrypt_share_paths)
+
+decrypt_share_paths = [
+    decrypt_path + '/shares/_' + str(x) + '.share' for x in range(N)][2:8]
 
 # Read and deserialize all shares, then decrypt the file given enough shares.
-run.fromSharesFilesReconstruct(decrypt_path, meta, *share_paths)
+run.fromSharesFilesReconstruct(decrypt_path, meta, *decrypt_share_paths)
 
 
 

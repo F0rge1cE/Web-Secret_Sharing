@@ -83,10 +83,10 @@ def reconstruct_file(fileContent, path, metaData=None):
 
 
 # Test
-if __name__ == '__main__':
-    path = '/Users/xuxueyang/Pictures/1.pic.jpg'
-    path1 = '/Users/xuxueyang/Desktop/ECE6102-Dependable-Distributed-System/Web-Secret_Sharing'
+# if __name__ == '__main__':
+#     path = '/Users/xuxueyang/Pictures/1.pic.jpg'
+#     path1 = '/Users/xuxueyang/Desktop/ECE6102-Dependable-Distributed-System/Web-Secret_Sharing'
 
-    content, meta = read_file_as_bytes(path, chunkSize=1)
+#     content, meta = read_file_as_bytes(path, chunkSize=1)
 
-    reconstruct_file(content, path1, meta)
+#     reconstruct_file(content, path1, meta)
