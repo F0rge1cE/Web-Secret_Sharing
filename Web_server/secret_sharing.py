@@ -16,28 +16,15 @@
 
 # [START imports]
 import os
-import urllib
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
 from google.appengine.api import mail, app_identity
 
-import httplib2
 import os
-import oauth2client
-from oauth2client import file 
-# from oauth2client import client, tools
-import base64
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-#import apiclient
+
 import googleapiclient
 from googleapiclient import discovery
-#from apiclient import discovery
-import mimetypes
-from email.mime.image import MIMEImage
-from email.mime.audio import MIMEAudio
-from email.mime.base import MIMEBase
 
 import jinja2
 import webapp2
@@ -108,33 +95,14 @@ class Encrypt(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
     def post(self):
-        try:
-            #file = self.request.POST.get('raw_file').file.read()
+        name = self.request.get('name')
+        N_share = self.request.get('N_share')
+        K_require = self.request.get('K_require')
 
-            uploaded_file = self.request.POST.get('raw_file')   # uploaded_file is an file object
-            content = uploaded_file.file.read()
-            file_name = uploaded_file.filename
-
-
-
-        except:
-            query_params = {
-                'except' : True
-            }
-            self.redirect('/encrypt?' + urllib.urlencode(query_params))
-        else:
-            name = self.request.get('name')
-            N_share = self.request.get('N_share')
-            K_require = self.request.get('K_require')
-            print("****************************************")
-            print(content)
-            print("add encrypt algorithm here")
-            print("****************************************")
-
-            query_params = {
-                'num' : N_share
-            }
-            self.redirect('/email?' + urllib.urlencode(query_params))
+        query_params = {
+            'num' : N_share,
+        }
+        self.redirect('/email?' + urllib.urlencode(query_params))
 
 
 # [START guestbook]
@@ -163,28 +131,30 @@ class Decrypt(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
     def post(self):
-        try:
+ 
+        file = self.request.POST.getall('raw_file')
+        name = self.request.get('name')
+        email = self.request.get('email')
+        for f in file:
+            sub_file = f.file.read()
+            print("****************")
+            print(sub_file)
+        # add reconstruct algorithm here
 
 
+        mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
+        app_identity.get_application_id()),
+                   to=email,
+                   subject="Reconstructed file",
+                   body="""
+                        The reconstructed file is in the attachment!
+                        """,
+                   attachments=[("test.share", "heiheihei")])
 
-            file = self.request.POST.getall('raw_file')
-            name = self.request.get('name')
-            for f in file:
-                sub_file = f.file.read()
-                print("****************")
-                print(sub_file)
-            # add reconstruct algorithm here
-        except:
-            query_params = {
-                'except' : True
-            }
-            self.redirect('/decrypt?' + urllib.urlencode(query_params))
-        else:
-            
-            query_params = {
-                'decrypt': True,
-            }
-            self.redirect('/success?' + urllib.urlencode(query_params))
+        query_params = {
+            'decrypt': True,
+        }
+        self.redirect('/success?' + urllib.urlencode(query_params))
 
 class Success(webapp2.RequestHandler):
 
@@ -236,19 +206,27 @@ class Email(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
     def post(self):
+        uploaded_file = self.request.POST.get('raw_file')   # uploaded_file is an file object
+        content = uploaded_file.file.read()
+        file_name = uploaded_file.filename
+
+        print("****************************************")
+        print(content)
+        print("add encrypt algorithm here")
+        print("****************************************")
+
         email = self.request.POST.getall('email')
         print("*********************************")
         for i in email:
             print(i)
         print("*********************************")
         for i in email:
-            mail.send_mail(sender='{}@ece6102assignment4.gserviceaccount.com'.format(
+            mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
             app_identity.get_application_id()),
                        to=i,
-                       subject="Decrypted shareds",
+                       subject="Encrypted shareds",
                        body="""
-                            Attached is the document file you requested.
-                            The example.com Team
+                            The shares are in the attachment!
                             """,
                        attachments=[("test.share", "heiheihei")])
 
