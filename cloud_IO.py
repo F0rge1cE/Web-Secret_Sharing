@@ -24,7 +24,7 @@ class CombinedShare(object):
         #   meta: meta data for the file
         share_content, meta = sharesManipulation.decodeShareInMemory(shareStr)
         self.shareCounter += 1
-
+        print(meta.totalSharesByBytes, meta.Hash)
         if self.meta is None:
             # The first share to add
             self.allShares = [[] for _ in range(meta.totalSharesByBytes)]

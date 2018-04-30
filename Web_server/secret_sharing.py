@@ -21,6 +21,7 @@ from google.appengine.api import users
 from google.appengine.ext import ndb
 from google.appengine.api import mail, app_identity
 import cloud_IO as algo
+import metaDataModel
 
 import os
 import urllib
@@ -147,15 +148,13 @@ class Decrypt(webapp2.RequestHandler):
         for f in file:
             sub_file = f.file.read()
             print("****************")
-            print(sub_file)
+            # print(sub_file)
 
-
-            decoder.addNewShare(shareString)
+            decoder.addNewShare(sub_file)
 
         # After add all shares
-        original_data, meta = shares.decryptAndReconstruct()
+        original_data, meta = decoder.decryptAndReconstruct()
         file_name = meta.fileName
-
 
         mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
         app_identity.get_application_id()),
