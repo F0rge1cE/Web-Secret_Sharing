@@ -32,9 +32,24 @@ class CombinedShare(object):
             if self.meta.Hash != meta.Hash:
                 print('Meta data does not match!')
                 raise Exception('Meta data does not match!')
-
+        print(self.allShares)
+        print(share_content)
         for i in range(meta.totalSharesByBytes):
                 self.allShares[i].append(share_content[i])
+
+
+
+    # def distributeShares(self, meta):
+    #     # Generate share files and distribute them
+    #     # Param:
+    #     #   allShares: List[string] - shares given to the algorithm
+    #     #   meta: meta data for the file to be reconstruct
+    #     #   *path: paths that shares are going to..
+    #     # Return: List[string] - All N generated shares. Each share is a string.
+    #     N_shares = meta.N_shares
+
+    #     for i in range(N_shares):
+    #         data_per_share = [x[i] for x in allShares]
 
 
     def getAllSharesAndMeta(self):
@@ -86,12 +101,17 @@ class CombinedShare(object):
 
         # encode shares ... combine with meta
         # Because we have no distributeShares() here.
-        for i in range(len(allShares)):
-            allShares[i] = sharesManipulation.encodeShareInMemory(allShares[i], meta)
+
+        shares_to_distribute = []
+
+        for i in range(meta.N_shares):
+            data_per_share = [x[i] for x in allShares]
+            shares_to_distribute += sharesManipulation.encodeShareInMemory(
+                data_per_share, meta)
 
 
         print("Encrypting Cost: {0} seconds".format(time.time() - startTime))
-        return allShares, meta
+        return shares_to_distribute, meta
 
 
     def decryptAndReconstruct(self):
@@ -137,17 +157,24 @@ class CombinedShare(object):
 
 # Example of how to use it...
 if __name__ == '__main__':
-    shares = CombinedShare()
 
+    content_original = '12345678890'
+    fileName = 'test.txt'
+    N_shares = 3
+    K_required = 2
+
+    shares = CombinedShare()
     # Encrypt given data..
     allShares, meta = shares.DirectEncrypt(content_original, fileName, N_shares, K_required)
 
     # For decryption, add each share
-    for shareString in share_list:
+    for shareString in allShares:
         shares.addNewShare(shareString)
     
     # After add all shares
     original_data, meta = shares.decryptAndReconstruct()
+    print(original_data)
+    print(meta.FileName)
     
     
 
