@@ -171,7 +171,7 @@ class Decrypt(webapp2.RequestHandler):
 
         file_name = str(meta.FileName)
 
-        mail.send_mail(sender='{}@macro-topic-193804.appspotmail.com'.format(
+        mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
         app_identity.get_application_id()),
                    to=email,
                    subject="Reconstructed file",
@@ -283,11 +283,11 @@ class Email(webapp2.RequestHandler):
         for i in range(len(email)):
             share_name = str(file_name) + '_share_' + str(i + 1) + '.share'
 
-            mail.send_mail(sender='{}@macro-topic-193804.appspotmail.com'.format(
+            mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
                 app_identity.get_application_id()),
                        to=email[i],
                        subject=str(md.file_name)+" "+str(md.N_share)+" "+str(md.K_require)+" "+str(md.hash_value)+" "+str(md.last_chunk_size)+" "+str(md.normal_chunk_size)+" "+str(md.total_bytes)+" "+str(md.total_shares_by_bytes),
-                       body=str(md.file_name) + str(md.N_share) + str(md.K_require) + str(md.hash_value) + str(md.last_chunk_size) + str(md.normal_chunk_size) + str(md.total_bytes) + str(md.total_shares_by_bytes),
+                       body="This is your share for " + name,
                 attachments=[(share_name, allShares[i])])
 
 
@@ -298,12 +298,38 @@ class Email(webapp2.RequestHandler):
         self.redirect('/success?' + urllib.urlencode(query_params))
 
 
+
+class Us(webapp2.RequestHandler):
+
+    def get(self):
+        user = users.get_current_user()
+        if user:
+            url = users.create_logout_url(self.request.uri)
+            url_linktext = 'Logout'
+        else:
+            url = users.create_login_url(self.request.uri)
+            url_linktext = 'Login'
+
+        template_values = {
+            'user': user,
+            'url': url,
+            'url_linktext': url_linktext,
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('./template/us.html')
+        self.response.write(template.render(template_values))
+
+
+
+
+
 # [START app]
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/encrypt', Encrypt),
     ('/decrypt', Decrypt),
     ('/success', Success),
-    ('/email', Email)
+    ('/email', Email),
+    ('/us', Us)
 ], debug=True)
 # [END app]

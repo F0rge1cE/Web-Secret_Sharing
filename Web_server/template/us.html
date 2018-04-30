@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+  <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+    <!-- [END css] -->
+    <style type="text/css">
+      blockquote {
+        margin-bottom: 10px;
+        border-left-color: #bbb;
+      }
+      form {
+        margin-top: 10px;
+      }
+      h1{
+      }
+
+      .header {
+        max-width: 700px;
+      }
+
+      .head-info{
+        text-align: center;
+      }
+
+      .form-signin input[type="text"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+      .row {
+        margin-left: 0px;
+        margin-top: 10px;
+      }
+
+
+    </style>
+
+  </head>
+  <body>
+
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+      <a class="my-0 mr-md-auto font-weight-normal" href="/">Secret Sharing</a>
+      <nav class="my-2 my-md-0 mr-md-3">
+        <a class="p-2 text-dark" href="encrypt">Encrypt</a>
+        <a class="p-2 text-dark" href="decrypt">Reconstruct</a>
+        <a class="p-2 text-dark" href="us">About Us</a>
+      </nav>
+      <a class="btn btn-outline-primary" href="{{ url|safe }}">{{ url_linktext }}</a>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div id="teamMember" class="row" style="margin-top:150px">
+              <div class="col-2"></div>
+              <div class="col-2">
+                  <img src="https://00e9e64bac26d919ecb12d08bd12d29390b8c35670cfd02982-apidata.googleusercontent.com/download/storage/v1/b/ece6102assignment4/o/guoyuan.jpeg?qk=AD5uMEst8jssfR29EPnRrrnkGUCWFBHKE4TGABuXTHRC3AijV10SK0TDxoVCwfvHkSuOhMZHPjBuEUUwwlv-BfS35sGOpZDL2kvPfWzde4vBwSCWmEw0i92shyIF9n_XcpyWq7hOwjUJAE4o1BmnixfPx_Sxow6GT--kmXLDlPKZLBwWpr9esvk6i6wDTOPmmaRvDpUac8yozSbIpw-EKdHcVvjTHE3WtQ3LGVODEx5koJm63PVQkcZ5EEB_Lun7y9dfFwM0adUuFKA6MNIDR9_Sn8ihUAD4jh2d3nl0m695F9B4FTIgnxM0rN6BOZlongk9qB3GodTTwnzok6xui8AA0tG9SGlCMNJ2enfjDPEUlmEKSsFC9DE1zbhXm4iJ357J7274lhgGHeBptV_TdgaWF88CsLTOh3HCHNdaIwGN9ca5dd0Be6NqYlg05d7013zsQxuk6oEIqUivQm2dJZE3HK5ScYc8vu7VtOmVMvcBt8JzOqCzII6s3WlMGdyS1mgGi2e4YoSx6YXuhDh4qffawAyhd75VIEqVDhKrQYSp4r7B89SC8eqbdIi5ivieqaSvmHVX2rwTCtEcPCvAFSpnqrLcl65oRDOmUc00ADV7sNjji0KtGI-uCG9cwpoFHiCFmpPLXxRaeJOMYmJumeQ1L4uFPgJdRF7-RaDWT--JPBb6kINXSOcYVGthfTWtA4iV6_ZE3AylitvVTvzSp3BZgBYsRDRA3EyTv9Lrz28KkQy0r57AEc0" alt="Guoyuan Wu" style="width:128px;height:128px;">
+                  <h3 class="author-text">Guoyuan Wu</h3>
+                  <span class="position">Fullstack Developer</span>
+                  <br class="contact">guoyuanwu666@gmail.com</br>
+              </div>
+              <div class="col-2"></div>
+              <div class="col-2">
+                  <img class="img-author" src="https://00e9e64bac8c071157ad3c26d2f6766652570388103bef9e6e-apidata.googleusercontent.com/download/storage/v1/b/ece6102assignment4/o/xueyang.jpeg?qk=AD5uMEtPHOL7FB36y0fVY_K3OpDmwl8L2NwxUMFt-czMlhtMR5jeF0n3HP_JWksQ8fsNrm2OI60hdvVvbEEp7Uyfr_lDC4Juxp_nnI-ADdKhD8AdO-5Jegqt0-IUNY675GRf8F5zicltbIixueWO6GwJHOozJBx4fR0pXIGmfv2SM6YMytRsVRJE-wnQTwSIAbRBQ_UTJ_ebAGhB5Qe7hPbINI5iYWQ-0WbVY6GdAGqyKXzvAisjkb4n1VA8V82e64cvNFS62wlXeI9H7PmAhJ65Vxlk3kZiHIiyY_D9a2Vhj8lm7J4dK_97X5sXv7cXnchMAh-IgZt43To_XC3iIRm08zJkZTsoHPmVj3gZnhTTODzwVcvhZxvMoq_0eF6OMNj2brT3bbyAE8O3ZdKLjzpLqiMtw_phmDGH674mRCdY-0QjFhP5o_MX7l0jpqWJW0gdjmkbNTxCgOBov1H_BawL7voU0pEWLVpt8TswNAw6KHJs26FAoA9nqQ1cRI9F19hMmccExQIOaofvcxOysnTPIjbBcx4iBCkDYQQa42Bt4MdCFgpeT3XDU70hrHN3tYrHr_zJ3MKMuPkTbAaSISM2z3TRH2IovtQm80VCxtwSMCwYqqqTklbvXiNpBouSAx_5xogykG-P_cNcMC7JaqaOfO7btVaOKohtZNvlsbmwQABk_U3prx7B5mxNDVgWG_ycxeGg9SxREqLK4W9IqlTLMOXq8RLP-HHSFmuQULE6H7F93W7P7NE" alt="Xueyang Xu" style="width:128px;height:128px;">
+                  <h3 class="author-text">Xueyang Xu</h3>
+                  <span class="position">Backend Developer</span>
+                  <br class="contact">xuxy1994@gmail.com</br>
+              </div>
+              <div class="col-2"></div>
+              <div class="col-2">
+                  <img class="img-author" src="https://00e9e64bacf62dd06b5f0869f01d7546af2151cd28d79ff08b-apidata.googleusercontent.com/download/storage/v1/b/ece6102assignment4/o/yunwei.jpeg?qk=AD5uMEvYLI-eE8mZZf0Se2xWIvrqgmko4w074px7tev9n-9qg1zI1VKZ2YUk13Z_LigVG-DsioQeeKHGvS-COmVd2kcrebY5GWoHRG2BQl5SBIODsj0gkSShS_-wny05lSNQcQ7hWEcaQbLs51OR-EiRmqpU7Dtzd92z-uTomNrM00WuQq8mAvOK1XhXQGDqBiMGjAbA-KPI8TBN0HN3YZYvuLderJcO9eXwPl8Rtgw1mylzsO2jz6iZQaKENdoUV8gZfjLxx9-NLzcXsK5wa7svYOaEnghmQsK2rT4yNRohVkLjNEdnp7iT4VJxvcHG1qSyZRFBznUdtWah4v_bdL1Aw0iIW8hT2twteBsVwebfKQ4Ll1IQyUWgPMmAirVWmMR1eajbePyqA0PdJFcKJcIFdEmpGAaoYsBZaPoNuC6g-PiWx2YMfUuJtjB__5-4o5hGfnIoEH6RiVysWd4TRR1N3-WWc6ORLLJbKQTDpkpTq7CfKU73_Rm9HWz5Step5a9DpjXGqqD_lVvzNOAjF35xcicK_5Xqvnij1j0EG09ONDM16nVUkAdAfHDjowssqWu0IzIiqOiA9w7aPF06d9V0_z-szqaaZH_2fm-0gXxDI51fLIxSnmQZ75oO-FsMCxU2hM7dyMa_XND1TOz_9Ivb_QyDu1rG9kZHMKWiwFCK1fSpUjTHUV5vPlZV5U7an3c1_1gteZwceZXS0ru8szk8fh5qi2qlvF679RpcRwVVCeGoHe9_Ktc" alt="Yunwei Qiang" style="width:128px;height:128px;">
+                  <h3 class="author-text">Yunwei Qiang</h3>
+                  <span class="position">Algorithm Developer</span>
+                  <br class="contact">willqiangyw@gmail.com</br>
+              </div>
+
+        </div>
+      </div>
+      <br>
+      <br>
+      <div class="container text-center">
+        <form action="/" method="get">
+          <button class="btn btn-primary">Return to main page!</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+{% endautoescape %}
