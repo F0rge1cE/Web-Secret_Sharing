@@ -106,7 +106,8 @@ class Encrypt(webapp2.RequestHandler):
         name = self.request.get('name')#added for name
         N_share = self.request.get('N_share')
         K_require = self.request.get('K_require')
-
+        print("________________________")
+        print(name)
 
 
         query_params = {
@@ -205,7 +206,7 @@ class Success(webapp2.RequestHandler):
 class Email(webapp2.RequestHandler):
 
     def get(self):
-        name = self.request.get('num')#added for name
+        name = self.request.get('name')#added for name
         Nnum = int(self.request.get('num'))
         Knum_require = int(self.request.get('num_require'))
 
@@ -223,6 +224,7 @@ class Email(webapp2.RequestHandler):
 
 
         print("****************************************")
+        print(name)
         print(Nnum)
         print(Knum_require)
         template_values = {
@@ -243,11 +245,12 @@ class Email(webapp2.RequestHandler):
         content = uploaded_file.file.read()
         file_name = uploaded_file.filename
         print(file_name)
-        name = int(self.request.POST.get('name'))#added for name
+        name = self.request.get('name')#added for name
         num_N = int(self.request.POST.get('number'))
         num_K = int(self.request.POST.get('num_require'))
 
         print("****************************************")
+        print(name)
         print(num_N)
         print(num_K)
 
@@ -294,7 +297,6 @@ app = webapp2.WSGIApplication([
     ('/encrypt', Encrypt),
     ('/decrypt', Decrypt),
     ('/success', Success),
-    ('/email', Email),
-    ('/us', Us)
+    ('/email', Email)
 ], debug=True)
 # [END app]
