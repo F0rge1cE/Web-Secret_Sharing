@@ -273,6 +273,7 @@ app = webapp2.WSGIApplication([
     ('/encrypt', Encrypt),
     ('/decrypt', Decrypt),
     ('/success', Success),
-    ('/email', Email)
+    ('/email', Email),
+    ('/us', Us)
 ], debug=True)
 # [END app]
