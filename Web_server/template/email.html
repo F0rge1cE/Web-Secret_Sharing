@@ -79,9 +79,12 @@
           <label class="custom-file-label" for="validatedCustomFile">Choose file...</label>
           <div id="file-upload-filename"></div>
           <div class="invalid-feedback">Please input a file!</div>
+
         </div>
-<!--         <input value="{{num}}"  name="num" disabled>
-        <input value="{{num_require}}" name="num_require" disabled> -->
+
+        <input value="{{num}}" type="hidden" name="number">
+        <input value="{{num_require}}" type="hidden" name="num_require">
+
         <br>
         <br>
         <button type="submit" class="btn btn-primary">Send shares!</button>

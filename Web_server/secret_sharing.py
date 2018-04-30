@@ -42,7 +42,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     autoescape=True)
 # [END imports]
 
-
 class File(ndb.Model):
 
     filt_name = ndb.StringProperty(indexed=False)
@@ -196,12 +195,9 @@ class Success(webapp2.RequestHandler):
 
 class Email(webapp2.RequestHandler):
 
-    num = 1
-    num_require = 1
-
     def get(self):
-        self.num = int(self.request.get('num'))
-        self.num_require = int(self.request.get('num_require'))
+        Nnum = int(self.request.get('num'))
+        Knum_require = int(self.request.get('num_require'))
 
         user = users.get_current_user()
         if user:
@@ -212,15 +208,20 @@ class Email(webapp2.RequestHandler):
             url_linktext = 'Login'
 
         lis = []
-        for i in range(self.num):
+        for i in range(Nnum):
             lis.append(i + 1)
+
+
+        print("****************************************")
+        print(Nnum)
+        print(Knum_require)
         template_values = {
             'user': user,
             'url': url,
             'url_linktext': url_linktext,
             'lis' : lis,
-            # 'num' : num,
-            # 'num_require' : num_require
+            'num' : Nnum,
+            'num_require' : Knum_require
         }
 
         template = JINJA_ENVIRONMENT.get_template('./template/email.html')
@@ -230,31 +231,24 @@ class Email(webapp2.RequestHandler):
         uploaded_file = self.request.POST.get('raw_file')   # uploaded_file is an file object
         content = uploaded_file.file.read()
         file_name = uploaded_file.filename
-
-        # num_N = int(self.request.get('num'))
-        # num_K = int(self.request.get('num_require'))
-
-        num_N = self.num
-        num_K = self.num_require
+        print(file_name)
+        num_N = int(self.request.POST.get('number'))
+        num_K = int(self.request.POST.get('num_require'))
 
         print("****************************************")
-        print(content)
-        print("add encrypt algorithm here")
+        print(num_N)
+        print(num_K)
 
         shares = algo.CombinedShare()
         allShares, meta = shares.DirectEncrypt(content, file_name, num_N, num_K)
 
 
         print("****************************************")
-        # for i in allShares:
-        #     print(i)
+
         email = self.request.POST.getall('email')
-        print("*********************************")
-        for i in email:
-            print(i)
-        print("*********************************")
-        for i in range(num_N):
-            share_name = str(file_name) + '_share_' + str(i) + '.share'
+
+        for i in range(len(email)):
+            share_name = str(file_name) + '_share_' + str(i + 1) + '.share'
 
             mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
                 app_identity.get_application_id()),
