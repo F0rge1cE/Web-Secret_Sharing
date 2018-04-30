@@ -245,6 +245,7 @@ class Email(webapp2.RequestHandler):
         content = uploaded_file.file.read()
         file_name = uploaded_file.filename
         print(file_name)
+        
         name = self.request.get('name')#added for name
         num_N = int(self.request.POST.get('number'))
         num_K = int(self.request.POST.get('num_require'))
