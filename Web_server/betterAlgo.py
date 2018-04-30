@@ -65,7 +65,7 @@ def get_points(coefficients, shares, prime):
 	# print(rev_coef)
 	points = []
 
-	for x in range(0,shares+1):
+	for x in range(1,shares+1):
 		idx = 0
 		y = 0
 		for coef in coefficients[::-1]:
