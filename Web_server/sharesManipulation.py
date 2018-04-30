@@ -32,8 +32,10 @@ def decodeShareInMemory(f):
         f = StringIO.StringIO(f)
     f.seek(0)
     share_content = pickle.load(f)
+    newMeta = metaDataModel.metaData(0, 0)
+    newMeta.initFromDict(share_content[0])
 
-    return share_content[1:], share_content[0]
+    return share_content[1:], newMeta
 
 
 
@@ -72,7 +74,6 @@ def addKeyToShare(share, fileMeta):
     #   path: original shares
     #   fileMeta: meta data of the file
     # Return: List[bytes]
-
 
     return [fileMeta.toDict()] + share
 
