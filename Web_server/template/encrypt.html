@@ -42,6 +42,8 @@
 
   </head>
   <body>
+
+
     
 
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
@@ -55,6 +57,13 @@
     </div>
 
     <div class="container">
+
+
+      {% if except %}
+
+        <p class="lead">Please input valid K and N value！</p>
+
+      {% endif %}
 
       <div class="progress" style="height: 30px; margin-top: 50px;">
         <div class="progress-bar progress-bar-striped progress-bar-animated lead" role="progressbar" style="width: 33%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">File details</div>

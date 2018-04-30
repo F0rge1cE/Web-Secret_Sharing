@@ -108,14 +108,19 @@ class Encrypt(webapp2.RequestHandler):
         K_require = self.request.get('K_require')
         print("________________________")
         print(name)
+        if int(N_share) < int(K_require):
+            query_params = {
+                'except' : True
+            }
+            self.redirect('/encrypt?' + urllib.urlencode(query_params))
+        else:
 
-
-        query_params = {
-            'name' : name,#added for name
-            'num' : N_share,
-            'num_require' : K_require
-        }
-        self.redirect('/email?' + urllib.urlencode(query_params))
+            query_params = {
+                'name' : name,#added for name
+                'num' : N_share,
+                'num_require' : K_require
+            }
+            self.redirect('/email?' + urllib.urlencode(query_params))
 
 
 # [START guestbook]
