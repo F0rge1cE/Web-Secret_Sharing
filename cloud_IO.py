@@ -54,7 +54,7 @@ class CombinedShare(object):
         totalBytes = len(Content_all)
         # split the whole data into chunks
         content = [Content_all[x:x + chunkSize]
-                for x in totalBytes if x % chunkSize == 0]
+                for x in range(totalBytes) if x % chunkSize == 0]
         meta = fileInOut.record_meta_data(
             path, content, lastChunkSize=len(content[-1]))
 
@@ -82,6 +82,13 @@ class CombinedShare(object):
         meta.N_shares = N_shares
         meta.normalChunkSize = chunkSize
         meta.totalSharesByBytes = len(content)
+
+
+        # encode shares ... combine with meta
+        # Because we have no distributeShares() here.
+        for i in range(len(allShares)):
+            allShares[i] = sharesManipulation.encodeShareInMemory(allShares[i], meta)
+
 
         print("Encrypting Cost: {0} seconds".format(time.time() - startTime))
         return allShares, meta
@@ -129,18 +136,18 @@ class CombinedShare(object):
 
 
 # Example of how to use it...
-if __name__ == '__main__':
-    shares = CombinedShare()
+# if __name__ == '__main__':
+#     shares = CombinedShare()
 
-    # Encrypt given data..
-    allShares, meta = shares.DirectEncrypt(content_original, fileName, N_shares, K_required)
+#     # Encrypt given data..
+#     allShares, meta = shares.DirectEncrypt(content_original, fileName, N_shares, K_required)
 
-    # For decryption, add each share
-    for shareString in share_list:
-        shares.addNewShare(shareString)
+#     # For decryption, add each share
+#     for shareString in share_list:
+#         shares.addNewShare(shareString)
     
-    # After add all shares
-    original_data, meta = shares.decryptAndReconstruct()
+#     # After add all shares
+#     original_data, meta = shares.decryptAndReconstruct()
     
     
 

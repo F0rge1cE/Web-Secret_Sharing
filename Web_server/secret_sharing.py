@@ -138,11 +138,23 @@ class Decrypt(webapp2.RequestHandler):
         file = self.request.POST.getall('raw_file')
         name = self.request.get('name')
         email = self.request.get('email')
+
+        # ******************************
+        # add reconstruct algorithm here
+        # ******************************
+        decoder = algo.CombinedShare()  # Creat a new decoder object
+
         for f in file:
             sub_file = f.file.read()
             print("****************")
             print(sub_file)
-        # add reconstruct algorithm here
+
+
+            decoder.addNewShare(shareString)
+
+        # After add all shares
+        original_data, meta = shares.decryptAndReconstruct()
+        file_name = meta.fileName
 
 
         mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
@@ -152,7 +164,7 @@ class Decrypt(webapp2.RequestHandler):
                    body="""
                         The reconstructed file is in the attachment!
                         """,
-                   attachments=[("test.share", "heiheihei")])
+            attachments=[(file_name, original_data)])
 
         query_params = {
             'decrypt': True,
@@ -236,14 +248,16 @@ class Email(webapp2.RequestHandler):
             print(i)
         print("*********************************")
         for i in range(num_N):
+            share_name = str(file_name) + '_share_' + str(i) + '.share'
+
             mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
-            app_identity.get_application_id()),
+                app_identity.get_application_id()),
                        to=email[i],
                        subject="Encrypted shareds",
                        body="""
                             The shares are in the attachment!
                             """,
-                       attachments=[("test.share", allShares[i])])
+                attachments=[(share_name, allShares[i])])
 
 
 
