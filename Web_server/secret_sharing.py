@@ -152,7 +152,7 @@ class Decrypt(webapp2.RequestHandler):
         # add reconstruct algorithm here
         # ******************************
         decoder = algo.CombinedShare()  # Creat a new decoder object
-
+        # print("Decoding!!!")
         for f in file:
             sub_file = f.file.read()
             print("****************")
@@ -162,9 +162,15 @@ class Decrypt(webapp2.RequestHandler):
 
         # After add all shares
         original_data, meta = decoder.decryptAndReconstruct()
-        file_name = meta.fileName
+        # original_data = original_data[0]
+        original_data = ''.join(original_data)  #### test here!!!!!!!
 
-        mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
+        # print("original DATA: ", original_data[0])
+        # print("file name:", meta.FileName)
+
+        file_name = str(meta.FileName)
+
+        mail.send_mail(sender='{}@macro-topic-193804.appspotmail.com'.format(
         app_identity.get_application_id()),
                    to=email,
                    subject="Reconstructed file",
@@ -273,7 +279,7 @@ class Email(webapp2.RequestHandler):
         for i in range(len(email)):
             share_name = str(file_name) + '_share_' + str(i + 1) + '.share'
 
-            mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
+            mail.send_mail(sender='{}@macro-topic-193804.appspotmail.com'.format(
                 app_identity.get_application_id()),
                        to=email[i],
                        subject=str(md.file_name)+" "+str(md.N_share)+" "+str(md.K_require)+" "+str(md.hash_value)+" "+str(md.last_chunk_size)+" "+str(md.normal_chunk_size)+" "+str(md.total_bytes)+" "+str(md.total_shares_by_bytes),

@@ -22,18 +22,26 @@ class CombinedShare(object):
         # Return: 
         #   allShares: List[byte] - shares given to the algorithm
         #   meta: meta data for the file
+        print(shareStr)
+
         share_content, meta = sharesManipulation.decodeShareInMemory(shareStr)
+
+        print(share_content)
+        print(meta.FileName)
+
         self.shareCounter += 1
         print(meta.totalSharesByBytes, meta.Hash)
+
         if self.meta is None:
             # The first share to add
             self.allShares = [[] for _ in range(meta.totalSharesByBytes)]
+            self.meta  = meta
         else:
             if self.meta.Hash != meta.Hash:
                 print('Meta data does not match!')
                 raise Exception('Meta data does not match!')
-        print(self.allShares)
-        print(share_content)
+        # print(self.allShares)
+        # print(share_content)
         for i in range(meta.totalSharesByBytes):
                 self.allShares[i].append(share_content[i])
 
@@ -106,8 +114,9 @@ class CombinedShare(object):
 
         for i in range(meta.N_shares):
             data_per_share = [x[i] for x in allShares]
-            shares_to_distribute += sharesManipulation.encodeShareInMemory(
-                data_per_share, meta)
+            shares_to_distribute += [sharesManipulation.encodeShareInMemory(
+                data_per_share, meta)]
+            print(shares_to_distribute, meta.Hash)
 
 
         print("Encrypting Cost: {0} seconds".format(time.time() - startTime))
