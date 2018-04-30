@@ -185,9 +185,12 @@ class Success(webapp2.RequestHandler):
 
 class Email(webapp2.RequestHandler):
 
+    num = 1
+    num_require = 1
+
     def get(self):
-        num = int(self.request.get('num'))
-        num_require = int(self.request.get('num_require'))
+        self.num = int(self.request.get('num'))
+        self.num_require = int(self.request.get('num_require'))
 
         user = users.get_current_user()
         if user:
@@ -198,15 +201,15 @@ class Email(webapp2.RequestHandler):
             url_linktext = 'Login'
 
         lis = []
-        for i in range(num):
+        for i in range(self.num):
             lis.append(i + 1)
         template_values = {
             'user': user,
             'url': url,
             'url_linktext': url_linktext,
             'lis' : lis,
-            'num' : num,
-            'num_require' : num_require
+            # 'num' : num,
+            # 'num_require' : num_require
         }
 
         template = JINJA_ENVIRONMENT.get_template('./template/email.html')
@@ -217,8 +220,11 @@ class Email(webapp2.RequestHandler):
         content = uploaded_file.file.read()
         file_name = uploaded_file.filename
 
-        num_N = int(self.request.get('num'))
-        num_K = int(self.request.get('num_require'))
+        # num_N = int(self.request.get('num'))
+        # num_K = int(self.request.get('num_require'))
+
+        num_N = self.num
+        num_K = self.num_require
 
         print("****************************************")
         print(content)
@@ -229,7 +235,8 @@ class Email(webapp2.RequestHandler):
 
 
         print("****************************************")
-
+        # for i in allShares:
+        #     print(i)
         email = self.request.POST.getall('email')
         print("*********************************")
         for i in email:
