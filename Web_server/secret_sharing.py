@@ -20,8 +20,10 @@ import os
 from google.appengine.api import users
 from google.appengine.ext import ndb
 from google.appengine.api import mail, app_identity
+import cloud_IO as algo
 
 import os
+import urllib
 
 import googleapiclient
 from googleapiclient import discovery
@@ -101,6 +103,7 @@ class Encrypt(webapp2.RequestHandler):
 
         query_params = {
             'num' : N_share,
+            'num_require' : K_require
         }
         self.redirect('/email?' + urllib.urlencode(query_params))
 
@@ -184,6 +187,8 @@ class Email(webapp2.RequestHandler):
 
     def get(self):
         num = int(self.request.get('num'))
+        num_require = int(self.request.get('num_require'))
+
         user = users.get_current_user()
         if user:
             url = users.create_logout_url(self.request.uri)
@@ -199,7 +204,9 @@ class Email(webapp2.RequestHandler):
             'user': user,
             'url': url,
             'url_linktext': url_linktext,
-            'lis' : lis
+            'lis' : lis,
+            'num' : num,
+            'num_require' : num_require
         }
 
         template = JINJA_ENVIRONMENT.get_template('./template/email.html')
@@ -210,9 +217,17 @@ class Email(webapp2.RequestHandler):
         content = uploaded_file.file.read()
         file_name = uploaded_file.filename
 
+        num_N = int(self.request.get('num'))
+        num_K = int(self.request.get('num_require'))
+
         print("****************************************")
         print(content)
         print("add encrypt algorithm here")
+
+        shares = algo.CombinedShare()
+        allShares, meta = shares.DirectEncrypt(content, file_name, num_N, num_K)
+
+
         print("****************************************")
 
         email = self.request.POST.getall('email')
@@ -220,15 +235,15 @@ class Email(webapp2.RequestHandler):
         for i in email:
             print(i)
         print("*********************************")
-        for i in email:
+        for i in range(num_N):
             mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
             app_identity.get_application_id()),
-                       to=i,
+                       to=email[i],
                        subject="Encrypted shareds",
                        body="""
                             The shares are in the attachment!
                             """,
-                       attachments=[("test.share", "heiheihei")])
+                       attachments=[("test.share", allShares[i])])
 
 
 
