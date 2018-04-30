@@ -148,6 +148,10 @@ class Decrypt(webapp2.RequestHandler):
         file = self.request.POST.getall('raw_file')
         name = self.request.get('name')
         email = self.request.get('email')
+        query_params = {
+            'decrypt': True,
+        }
+        self.redirect('/success?' + urllib.urlencode(query_params))
 
         # ******************************
         # add reconstruct algorithm here
@@ -180,10 +184,10 @@ class Decrypt(webapp2.RequestHandler):
                         """,
             attachments=[(file_name, original_data)])
 
-        query_params = {
-            'decrypt': True,
-        }
-        self.redirect('/success?' + urllib.urlencode(query_params))
+        # query_params = {
+        #     'decrypt': True,
+        # }
+        # self.redirect('/success?' + urllib.urlencode(query_params))
 
 class Success(webapp2.RequestHandler):
 
@@ -261,6 +265,14 @@ class Email(webapp2.RequestHandler):
         print(num_N)
         print(num_K)
 
+        query_params = {
+            'encrypt': True,
+        }
+        self.redirect('/success?' + urllib.urlencode(query_params))
+
+
+
+
         shares = algo.CombinedShare()
         allShares, meta = shares.DirectEncrypt(content, file_name, num_N, num_K, 255)
 
@@ -275,6 +287,7 @@ class Email(webapp2.RequestHandler):
         md.total_shares_by_bytes = meta.totalSharesByBytes
         md.put()
         print("****************************************")
+        print("haohaohaohaohaohaohao")
 
 
 
@@ -292,10 +305,10 @@ class Email(webapp2.RequestHandler):
 
 
 
-        query_params = {
-            'encrypt': True,
-        }
-        self.redirect('/success?' + urllib.urlencode(query_params))
+        # query_params = {
+        #     'encrypt': True,
+        # }
+        # self.redirect('/success?' + urllib.urlencode(query_params))
 
 
 
