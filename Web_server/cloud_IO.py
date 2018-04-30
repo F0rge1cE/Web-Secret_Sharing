@@ -33,6 +33,7 @@ class CombinedShare(object):
         print(meta.totalSharesByBytes, meta.Hash)
 
         if self.meta is None:
+            print(meta.totalSharesByBytes)
             # The first share to add
             self.allShares = [[] for _ in range(meta.totalSharesByBytes)]
             self.meta  = meta
