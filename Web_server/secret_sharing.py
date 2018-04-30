@@ -35,6 +35,7 @@ import webapp2
 SCOPES = 'https://www.googleapis.com/auth/gmail.send'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Gmail API Python Send Email'
+DEFAULT_METADATA_NAME = 'SOME_METADATA'
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -42,14 +43,19 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     autoescape=True)
 # [END imports]
 
-class File(ndb.Model):
+class MetaData(ndb.Model):
 
-    filt_name = ndb.StringProperty(indexed=False)
-    N_share = ndb.StringProperty(indexed=False)
-    K_require = ndb.StringProperty(indexed=False)
+    file_name = ndb.StringProperty(indexed=False)
+    N_share = ndb.IntegerProperty(indexed=False)
+    K_require = ndb.IntegerProperty(indexed=False)
     hash_value = ndb.StringProperty(indexed=False)
+    last_chunk_size = ndb.IntegerProperty(indexed=False)
+    normal_chunk_size = ndb.IntegerProperty(indexed=False)
+    total_bytes = ndb.IntegerProperty(indexed=False)
+    total_shares_by_bytes = ndb.IntegerProperty(indexed=False)
 
-
+def metadata_key(metadata_name=DEFAULT_METADATA_NAME):
+    return ndb.Key('MeataDATA', metadata_name)
 
 
 
@@ -97,11 +103,14 @@ class Encrypt(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
     def post(self):
-        name = self.request.get('name')
+        name = self.request.get('name')#added for name
         N_share = self.request.get('N_share')
         K_require = self.request.get('K_require')
 
+
+
         query_params = {
+            'name' : name,#added for name
             'num' : N_share,
             'num_require' : K_require
         }
@@ -196,6 +205,7 @@ class Success(webapp2.RequestHandler):
 class Email(webapp2.RequestHandler):
 
     def get(self):
+        name = self.request.get('num')#added for name
         Nnum = int(self.request.get('num'))
         Knum_require = int(self.request.get('num_require'))
 
@@ -220,6 +230,7 @@ class Email(webapp2.RequestHandler):
             'url': url,
             'url_linktext': url_linktext,
             'lis' : lis,
+            'name' : name,#added for name
             'num' : Nnum,
             'num_require' : Knum_require
         }
@@ -232,6 +243,7 @@ class Email(webapp2.RequestHandler):
         content = uploaded_file.file.read()
         file_name = uploaded_file.filename
         print(file_name)
+        name = int(self.request.POST.get('name'))#added for name
         num_N = int(self.request.POST.get('number'))
         num_K = int(self.request.POST.get('num_require'))
 
@@ -240,10 +252,21 @@ class Email(webapp2.RequestHandler):
         print(num_K)
 
         shares = algo.CombinedShare()
-        allShares, meta = shares.DirectEncrypt(content, file_name, num_N, num_K)
+        allShares, meta = shares.DirectEncrypt(content, file_name, num_N, num_K, 255)
 
-
+        md = MetaData(parent=metadata_key(name))
+        md.file_name = meta.FileName
+        md.N_share = meta.N_shares
+        md.K_require = meta.K_required
+        md.hash_value = meta.Hash
+        md.last_chunk_size = meta.lastChunkSize
+        md.normal_chunk_size = meta.normalChunkSize
+        md.total_bytes = meta.totalBytes
+        md.total_shares_by_bytes = meta.totalSharesByBytes
+        md.put()
         print("****************************************")
+
+
 
         email = self.request.POST.getall('email')
 
@@ -253,10 +276,8 @@ class Email(webapp2.RequestHandler):
             mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
                 app_identity.get_application_id()),
                        to=email[i],
-                       subject="Encrypted shareds",
-                       body="""
-                            The shares are in the attachment!
-                            """,
+                       subject=str(md.file_name)+" "+str(md.N_share)+" "+str(md.K_require)+" "+str(md.hash_value)+" "+str(md.last_chunk_size)+" "+str(md.normal_chunk_size)+" "+str(md.total_bytes)+" "+str(md.total_shares_by_bytes),
+                       body=str(md.file_name) + str(md.N_share) + str(md.K_require) + str(md.hash_value) + str(md.last_chunk_size) + str(md.normal_chunk_size) + str(md.total_bytes) + str(md.total_shares_by_bytes),
                 attachments=[(share_name, allShares[i])])
 
 
