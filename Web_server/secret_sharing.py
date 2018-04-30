@@ -144,45 +144,51 @@ class Decrypt(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
     def post(self):
- 
-        file = self.request.POST.getall('raw_file')
-        name = self.request.get('name')
-        email = self.request.get('email')
-        query_params = {
-            'decrypt': True,
-        }
-        self.redirect('/success?' + urllib.urlencode(query_params))
+        try:
+            file = self.request.POST.getall('raw_file')
+            name = self.request.get('name')
+            email = self.request.get('email')
+            query_params = {
+                'decrypt': True,
+            }
+            self.redirect('/success?' + urllib.urlencode(query_params))
 
-        # ******************************
-        # add reconstruct algorithm here
-        # ******************************
-        decoder = algo.CombinedShare()  # Creat a new decoder object
-        # print("Decoding!!!")
-        for f in file:
-            sub_file = f.file.read()
-            print("****************")
-            # print(sub_file)
+            # ******************************
+            # add reconstruct algorithm here
+            # ******************************
+            decoder = algo.CombinedShare()  # Creat a new decoder object
+            # print("Decoding!!!")
+            for f in file:
+                sub_file = f.file.read()
+                print("****************")
+                # print(sub_file)
 
-            decoder.addNewShare(sub_file)
+                decoder.addNewShare(sub_file)
 
-        # After add all shares
-        original_data, meta = decoder.decryptAndReconstruct()
-        # original_data = original_data[0]
-        original_data = ''.join(original_data)  #### test here!!!!!!!
+            # After add all shares
+            original_data, meta = decoder.decryptAndReconstruct()
+            # original_data = original_data[0]
+            original_data = ''.join(original_data)  #### test here!!!!!!!
 
-        # print("original DATA: ", original_data[0])
-        # print("file name:", meta.FileName)
+            # print("original DATA: ", original_data[0])
+            # print("file name:", meta.FileName)
 
-        file_name = str(meta.FileName)
+            file_name = str(meta.FileName)
 
-        mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
-        app_identity.get_application_id()),
-                   to=email,
-                   subject="Reconstructed file",
-                   body="""
-                        The reconstructed file is in the attachment!
-                        """,
-            attachments=[(file_name, original_data)])
+            mail.send_mail(sender='{}@ece6102assignment4.appspotmail.com'.format(
+            app_identity.get_application_id()),
+                       to=email,
+                       subject="Reconstructed file",
+                       body="""
+                            The reconstructed file is in the attachment!
+                            """,
+
+                attachments=[(file_name, original_data)])
+        except:
+            query_params = {
+                'except': True,
+            }
+            self.redirect('/decrypt?' + urllib.urlencode(query_params))
 
         # query_params = {
         #     'decrypt': True,
