@@ -2,8 +2,10 @@
 Serialize & deserialize the shares. 
 In memory OR to File.
 '''
+# import cPickle as pickle
 import pickle
 import StringIO
+import metaDataModel
 
 
 def encodeShareInMemory(super_share_bytes, meta, serialMode=0):
@@ -30,7 +32,7 @@ def decodeShareInMemory(f):
         f = StringIO.StringIO(f)
     f.seek(0)
     share_content = pickle.load(f)
-    # print('decrypt: ', path, share_content)
+
     return share_content[1:], share_content[0]
 
 
@@ -57,7 +59,12 @@ def decodeShareToFile(path):
     with open(path,'rb') as f:
         share_content = pickle.load(f)
     # print('decrypt: ', path, share_content)
-    return share_content[1:], share_content[0]
+
+    # initialize a meta data model fron the dictionary
+    newMeta = metaDataModel.metaData(0, 0 )
+    newMeta.initFromDict(share_content[0])
+
+    return share_content[1:], newMeta
 
 
 def addKeyToShare(share, fileMeta):
@@ -65,20 +72,23 @@ def addKeyToShare(share, fileMeta):
     #   path: original shares
     #   fileMeta: meta data of the file
     # Return: List[bytes]
-    return [fileMeta] + share
+
+
+    return [fileMeta.toDict()] + share
 
 
 
 
-# if __name__ == '__main__':
-#     class test(object):
-#         KEY = '123'
+if __name__ == '__main__':
+    class test(object):
+        KEY = '123'
 
-#     path = '/Users/xuxueyang/Desktop/ECE6102-Dependable-Distributed-System/Web-Secret_Sharing/ctest'
-#     path1 = '/Users/xuxueyang/Desktop/ECE6102-Dependable-Distributed-System/Web-Secret_Sharing'
-#     bytes = [(10,5777039903557844430036768186527487503110851800863090253527529362178407617274811626709570375169278262602087426174628508253092305817025479280549021333914750298434758008056122618084203732925598908944931456394245382144416758048020560009509368717104753153901361844865164494237072747660406518699694898423077055039705248168295378683605452087390395125582369472705736773986503154779745669773582651394503442439995078929380813494082515008944150899856292907735976225426420324017446501955694648186357007416445884916963748772602955127689106962047670315875312389286598779551827194598664574502346764321225890515403549212296395866145L)]
-#     encodeShare(bytes, path, test())
-#     print(bytes)
-#     a = decodeShare(path)
-#     print(a)
+    path = '/Users/xuxueyang/Desktop/ECE6102-Dependable-Distributed-System/Web-Secret_Sharing/ctest'
+    path1 = '/Users/xuxueyang/Desktop/111_share_0.share'
+
+    # encodeShareInMemory(bytes, path, test())
+    # print(bytes)
+    data, meta = decodeShareInMemory(path)
+    print(data)
+    print(meta)
 

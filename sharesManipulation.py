@@ -61,7 +61,7 @@ def decodeShareToFile(path):
     # print('decrypt: ', path, share_content)
 
     # initialize a meta data model fron the dictionary
-    newMeta = metaDataModel.metaData()
+    newMeta = metaDataModel.metaData(0, 0 )
     newMeta.initFromDict(share_content[0])
 
     return share_content[1:], newMeta

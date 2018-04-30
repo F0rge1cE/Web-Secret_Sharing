@@ -24,7 +24,7 @@ class CombinedShare(object):
         #   meta: meta data for the file
         share_content, meta = sharesManipulation.decodeShareInMemory(shareStr)
         self.shareCounter += 1
-
+        print(meta.totalSharesByBytes, meta.Hash)
         if self.meta is None:
             # The first share to add
             self.allShares = [[] for _ in range(meta.totalSharesByBytes)]
@@ -34,7 +34,7 @@ class CombinedShare(object):
                 raise Exception('Meta data does not match!')
 
         for i in range(meta.totalSharesByBytes):
-            self.allShares[i].append(share_content[i])
+                self.allShares[i].append(share_content[i])
 
 
     def getAllSharesAndMeta(self):
@@ -88,6 +88,7 @@ class CombinedShare(object):
         # Because we have no distributeShares() here.
         for i in range(len(allShares)):
             allShares[i] = sharesManipulation.encodeShareInMemory(allShares[i], meta)
+
 
         print("Encrypting Cost: {0} seconds".format(time.time() - startTime))
         return allShares, meta
